@@ -1,28 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function useUserForm(data) {
     const { initialValues, validation, onSubmit } = data
-    const [account, setAccount] = useState(initialValues.account)
-    const [password, setPassword] = useState(initialValues.password)
-    const [rememberMe, setRememberMe] = useState(initialValues.rememberMe)
-
-    const values = {
-        'account': account,
-        'password': password,
-        'rememberMe': rememberMe,
-    }
+    const [values, setValues] = useState(initialValues);
     const errors = validation(values)
 
     const handleChange = (e) => {
         switch (e.target.name) {
             case 'account':
-                setAccount(e.target.value)
+                setValues({
+                    ...values,
+                    'account': e.target.value,
+                })
                 break;
             case 'password':
-                setPassword(e.target.value)
+                setValues({
+                    ...values,
+                    'password': e.target.value,
+                })
                 break;
             case 'rememberMe':
-                setRememberMe(e.target.checked)
+                setValues({
+                    ...values,
+                    'rememberMe': e.target.checked,
+                })
                 break;
             default:
                 console.log(`nothing`);
@@ -36,18 +37,6 @@ export default function useUserForm(data) {
         }
         onSubmit(values)
     }
-
-    useEffect(() => {
-        values.account = account
-    }, [account])
-
-    useEffect(() => {
-        values.password = password
-    }, [password])
-
-    useEffect(() => {
-        values.rememberMe = rememberMe
-    }, [rememberMe])
 
     return { handleChange, handleSubmit, values, errors }
 }
